@@ -7,13 +7,35 @@ use App\Http\Requests\Api\V1\Admin\ProductBundleStoreRequest;
 use App\Http\Requests\Api\V1\Admin\ProductBundleUpdateRequest;
 use App\Http\Resources\ProductBundleResource;
 use App\Models\ProductBundle;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ProductBundleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bundles = ProductBundle::query()->with(['items', 'images'])->paginate(20);
+        $query = ProductBundle::query()->with(['items', 'images']);
+
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status = $request->query('status')) {
+            $query->where('status', $status);
+        }
+
+        if ($minPrice = $request->query('min_price')) {
+            $query->where('price', '>=', $minPrice);
+        }
+
+        if ($maxPrice = $request->query('max_price')) {
+            $query->where('price', '<=', $maxPrice);
+        }
+
+        $bundles = $query->paginate(20);
 
         return ProductBundleResource::collection($bundles);
     }

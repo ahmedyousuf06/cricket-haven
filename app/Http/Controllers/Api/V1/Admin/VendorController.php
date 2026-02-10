@@ -7,12 +7,26 @@ use App\Http\Requests\Api\V1\Admin\VendorStoreRequest;
 use App\Http\Requests\Api\V1\Admin\VendorUpdateRequest;
 use App\Http\Resources\VendorResource;
 use App\Models\Vendor;
+use Illuminate\Http\Request;
 
 class VendorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return VendorResource::collection(Vendor::query()->paginate(50));
+        $query = Vendor::query();
+
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('contact_email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status = $request->query('status')) {
+            $query->where('status', $status);
+        }
+
+        return VendorResource::collection($query->paginate(50));
     }
 
     public function store(VendorStoreRequest $request)

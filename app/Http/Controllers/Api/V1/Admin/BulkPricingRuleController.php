@@ -7,12 +7,23 @@ use App\Http\Requests\Api\V1\Admin\BulkPricingRuleStoreRequest;
 use App\Http\Requests\Api\V1\Admin\BulkPricingRuleUpdateRequest;
 use App\Http\Resources\BulkPricingRuleResource;
 use App\Models\BulkPricingRule;
+use Illuminate\Http\Request;
 
 class BulkPricingRuleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return BulkPricingRuleResource::collection(BulkPricingRule::query()->paginate(30));
+        $query = BulkPricingRule::query();
+
+        if ($productVariantId = $request->query('product_variant_id')) {
+            $query->where('product_variant_id', $productVariantId);
+        }
+
+        if ($minQty = $request->query('min_qty')) {
+            $query->where('min_qty', '>=', $minQty);
+        }
+
+        return BulkPricingRuleResource::collection($query->paginate(30));
     }
 
     public function store(BulkPricingRuleStoreRequest $request)

@@ -14,11 +14,33 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::query()
+        $query = Order::query()
             ->where('user_id', request()->user()->id)
-            ->with(['items', 'payment', 'shipment'])
-            ->latest()
-            ->paginate(15);
+            ->with(['items', 'payment', 'shipment']);
+
+        if ($status = request()->query('status')) {
+            $query->where('status', $status);
+        }
+
+        if ($from = request()->query('date_from')) {
+            $query->whereDate('created_at', '>=', $from);
+        }
+
+        if ($to = request()->query('date_to')) {
+            $query->whereDate('created_at', '<=', $to);
+        }
+
+        $sort = request()->query('sort', 'newest');
+        $sortMap = [
+            'newest' => ['created_at', 'desc'],
+            'oldest' => ['created_at', 'asc'],
+            'total_asc' => ['total', 'asc'],
+            'total_desc' => ['total', 'desc'],
+        ];
+        [$sortField, $sortDir] = $sortMap[$sort] ?? $sortMap['newest'];
+        $query->orderBy($sortField, $sortDir);
+
+        $orders = $query->paginate(15);
 
         return OrderResource::collection($orders);
     }

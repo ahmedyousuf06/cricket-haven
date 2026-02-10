@@ -12,11 +12,29 @@ class ReviewController extends Controller
 {
     public function index()
     {
-        $reviews = Review::query()
+        $query = Review::query()
             ->where('user_id', request()->user()->id)
-            ->with('images')
-            ->latest()
-            ->paginate(15);
+            ->with('images');
+
+        if ($rating = request()->query('rating')) {
+            $query->where('rating', $rating);
+        }
+
+        if (request()->has('is_approved')) {
+            $query->where('is_approved', request()->boolean('is_approved'));
+        }
+
+        $sort = request()->query('sort', 'newest');
+        $sortMap = [
+            'newest' => ['created_at', 'desc'],
+            'oldest' => ['created_at', 'asc'],
+            'rating_asc' => ['rating', 'asc'],
+            'rating_desc' => ['rating', 'desc'],
+        ];
+        [$sortField, $sortDir] = $sortMap[$sort] ?? $sortMap['newest'];
+        $query->orderBy($sortField, $sortDir);
+
+        $reviews = $query->paginate(15);
 
         return ReviewResource::collection($reviews);
     }

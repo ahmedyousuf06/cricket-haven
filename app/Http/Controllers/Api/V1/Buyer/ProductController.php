@@ -34,6 +34,34 @@ class ProductController extends Controller
             $query->where('vendor_id', $vendorId);
         }
 
+        if ($minPrice = $request->query('min_price')) {
+            $query->whereHas('variants', function ($q) use ($minPrice) {
+                $q->where('price', '>=', $minPrice);
+            });
+        }
+
+        if ($maxPrice = $request->query('max_price')) {
+            $query->whereHas('variants', function ($q) use ($maxPrice) {
+                $q->where('price', '<=', $maxPrice);
+            });
+        }
+
+        if ($request->boolean('in_stock')) {
+            $query->whereHas('variants', function ($q) {
+                $q->where('stock', '>', 0);
+            });
+        }
+
+        $sort = $request->query('sort', 'newest');
+        $sortMap = [
+            'newest' => ['created_at', 'desc'],
+            'oldest' => ['created_at', 'asc'],
+            'name_asc' => ['name', 'asc'],
+            'name_desc' => ['name', 'desc'],
+        ];
+        [$sortField, $sortDir] = $sortMap[$sort] ?? $sortMap['newest'];
+        $query->orderBy($sortField, $sortDir);
+
         return ProductResource::collection($query->paginate(12));
     }
 
