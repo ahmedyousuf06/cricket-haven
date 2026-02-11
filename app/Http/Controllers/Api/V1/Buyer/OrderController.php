@@ -16,7 +16,7 @@ class OrderController extends Controller
     {
         $query = Order::query()
             ->where('user_id', request()->user()->id)
-            ->with(['items', 'payment', 'shipment']);
+            ->with(['user', 'items.productVariant', 'items.bundle', 'payment', 'shipment']);
 
         if ($status = request()->query('status')) {
             $query->where('status', $status);
@@ -48,7 +48,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $this->authorizeOrder($order);
-        $order->load(['items', 'payment', 'shipment']);
+        $order->load(['user', 'items.productVariant', 'items.bundle', 'payment', 'shipment']);
 
         return new OrderResource($order);
     }
@@ -102,7 +102,7 @@ class OrderController extends Controller
             return $order;
         });
 
-        $order->load(['items', 'payment', 'shipment']);
+        $order->load(['user', 'items.productVariant', 'items.bundle', 'payment', 'shipment']);
 
         return new OrderResource($order);
     }

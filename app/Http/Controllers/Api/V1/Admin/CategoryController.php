@@ -14,7 +14,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::query()->with('children');
+        $query = Category::query()->with(['parent', 'children']);
 
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {
@@ -45,7 +45,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        $category->load('children');
+        $category->load(['parent', 'children']);
 
         return new CategoryResource($category);
     }

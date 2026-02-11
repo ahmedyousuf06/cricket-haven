@@ -15,6 +15,11 @@ class ShipmentResource extends JsonResource
         return [
             'id' => $this->id,
             'order_id' => $this->order_id,
+            'order' => $this->whenLoaded('order', fn () => [
+                'id' => $this->order->id,
+                'status' => $this->order->status,
+                'total' => $this->order->total,
+            ]),
             'carrier' => $this->carrier,
             'tracking_number' => $this->tracking_number,
             'status' => $this->status,

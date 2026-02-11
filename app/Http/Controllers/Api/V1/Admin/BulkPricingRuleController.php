@@ -13,7 +13,7 @@ class BulkPricingRuleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = BulkPricingRule::query();
+        $query = BulkPricingRule::query()->with('productVariant.product');
 
         if ($productVariantId = $request->query('product_variant_id')) {
             $query->where('product_variant_id', $productVariantId);
@@ -29,18 +29,22 @@ class BulkPricingRuleController extends Controller
     public function store(BulkPricingRuleStoreRequest $request)
     {
         $rule = BulkPricingRule::query()->create($request->validated());
+        $rule->load('productVariant.product');
 
         return new BulkPricingRuleResource($rule);
     }
 
     public function show(BulkPricingRule $bulk_pricing_rule)
     {
+        $bulk_pricing_rule->load('productVariant.product');
+
         return new BulkPricingRuleResource($bulk_pricing_rule);
     }
 
     public function update(BulkPricingRuleUpdateRequest $request, BulkPricingRule $bulk_pricing_rule)
     {
         $bulk_pricing_rule->update($request->validated());
+        $bulk_pricing_rule->load('productVariant.product');
 
         return new BulkPricingRuleResource($bulk_pricing_rule);
     }

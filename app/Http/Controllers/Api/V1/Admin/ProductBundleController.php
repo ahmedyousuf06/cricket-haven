@@ -14,7 +14,7 @@ class ProductBundleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ProductBundle::query()->with(['items', 'images']);
+        $query = ProductBundle::query()->with(['items.productVariant.product', 'images']);
 
         if ($search = $request->query('search')) {
             $query->where(function ($q) use ($search) {
@@ -68,14 +68,14 @@ class ProductBundleController extends Controller
             return $bundle;
         });
 
-        $bundle->load(['items', 'images']);
+        $bundle->load(['items.productVariant.product', 'images']);
 
         return new ProductBundleResource($bundle);
     }
 
     public function show(ProductBundle $bundle)
     {
-        $bundle->load(['items', 'images']);
+        $bundle->load(['items.productVariant.product', 'images']);
 
         return new ProductBundleResource($bundle);
     }
@@ -114,7 +114,7 @@ class ProductBundleController extends Controller
             return $bundle;
         });
 
-        $bundle->load(['items', 'images']);
+        $bundle->load(['items.productVariant.product', 'images']);
 
         return new ProductBundleResource($bundle);
     }
