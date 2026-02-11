@@ -48,6 +48,23 @@ class ProductVariant extends Model
     }
 
     /**
+     * @return BelongsToMany<AttributeValue>
+     */
+    public function attributeValues(): BelongsToMany
+    {
+        return $this->belongsToMany(AttributeValue::class, 'product_variant_attributes', 'product_variant_id', 'attribute_value_id')
+            ->withPivot('attribute_id');
+    }
+
+    /**
+     * @return HasMany<ProductVariantAttribute>
+     */
+    public function variantAttributes(): HasMany
+    {
+        return $this->hasMany(ProductVariantAttribute::class);
+    }
+
+    /**
      * @return HasMany<CartItem>
      */
     public function cartItems(): HasMany
@@ -69,6 +86,31 @@ class ProductVariant extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return HasMany<ProductBundleItem>
+     */
+    public function bundleItems(): HasMany
+    {
+        return $this->hasMany(ProductBundleItem::class);
+    }
+
+    /**
+     * @return BelongsToMany<ProductBundle>
+     */
+    public function bundles(): BelongsToMany
+    {
+        return $this->belongsToMany(ProductBundle::class, 'product_bundle_items', 'product_variant_id', 'bundle_id')
+            ->withPivot('qty');
+    }
+
+    /**
+     * @return HasMany<Review>
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 
     public function scopeInStock(Builder $query): Builder

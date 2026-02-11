@@ -45,4 +45,20 @@ class ProductBundle extends Model
     {
         return $this->hasMany(BundleImage::class, 'bundle_id');
     }
+
+    /**
+     * @return HasMany<CartItem>
+     */
+    public function cartItems(): HasMany
+    {
+        return $this->hasMany(CartItem::class, 'bundle_id');
+    }
+
+    /**
+     * @return HasMany<OrderItem>
+     */
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'bundle_id');
+    }
 }

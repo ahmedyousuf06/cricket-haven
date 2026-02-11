@@ -28,4 +28,12 @@ class Attribute extends Model
         return $this->belongsToMany(ProductVariant::class, 'product_variant_attributes')
             ->withPivot('attribute_value_id');
     }
+
+    /**
+     * @return HasMany<ProductVariantAttribute>
+     */
+    public function variantAttributes(): HasMany
+    {
+        return $this->hasMany(ProductVariantAttribute::class);
+    }
 }
