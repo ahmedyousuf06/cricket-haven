@@ -33,21 +33,21 @@ class BulkPricingRuleController extends Controller
         return new BulkPricingRuleResource($rule);
     }
 
-    public function show(BulkPricingRule $bulkPricingRule)
+    public function show(BulkPricingRule $bulk_pricing_rule)
     {
-        return new BulkPricingRuleResource($bulkPricingRule);
+        return new BulkPricingRuleResource($bulk_pricing_rule);
     }
 
-    public function update(BulkPricingRuleUpdateRequest $request, BulkPricingRule $bulkPricingRule)
+    public function update(BulkPricingRuleUpdateRequest $request, BulkPricingRule $bulk_pricing_rule)
     {
-        $bulkPricingRule->update($request->validated());
+        $bulk_pricing_rule->update($request->validated());
 
-        return new BulkPricingRuleResource($bulkPricingRule);
+        return new BulkPricingRuleResource($bulk_pricing_rule);
     }
 
-    public function destroy(BulkPricingRule $bulkPricingRule)
+    public function destroy(BulkPricingRule $bulk_pricing_rule)
     {
-        $bulkPricingRule->delete();
+        $bulk_pricing_rule->delete();
 
         return response()->json([
             'message' => 'Bulk pricing rule deleted.',
