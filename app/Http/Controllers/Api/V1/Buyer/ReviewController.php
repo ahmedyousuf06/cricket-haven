@@ -14,7 +14,7 @@ class ReviewController extends Controller
     {
         $query = Review::query()
             ->where('user_id', request()->user()->id)
-            ->with('images');
+            ->with(['product', 'productVariant', 'user', 'order', 'images']);
 
         if ($rating = request()->query('rating')) {
             $query->where('rating', $rating);
@@ -52,6 +52,8 @@ class ReviewController extends Controller
             'is_approved' => false,
         ]);
 
+        $review->load(['product', 'productVariant', 'user', 'order', 'images']);
+
         return new ReviewResource($review);
     }
 
@@ -64,6 +66,8 @@ class ReviewController extends Controller
             'title' => $request->input('title'),
             'comment' => $request->input('comment'),
         ]);
+
+        $review->load(['product', 'productVariant', 'user', 'order', 'images']);
 
         return new ReviewResource($review);
     }

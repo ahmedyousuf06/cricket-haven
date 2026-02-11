@@ -13,7 +13,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $query = Order::query()
-            ->with(['items', 'payment', 'shipment']);
+            ->with(['user', 'items.productVariant', 'items.bundle', 'payment', 'shipment']);
 
         if ($status = $request->query('status')) {
             $query->where('status', $status);
@@ -38,7 +38,7 @@ class OrderController extends Controller
 
     public function show(Order $order)
     {
-        $order->load(['items', 'payment', 'shipment']);
+        $order->load(['user', 'items.productVariant', 'items.bundle', 'payment', 'shipment']);
 
         return new OrderResource($order);
     }
@@ -46,6 +46,8 @@ class OrderController extends Controller
     public function update(OrderUpdateRequest $request, Order $order)
     {
         $order->update($request->validated());
+
+        $order->load(['user', 'items.productVariant', 'items.bundle', 'payment', 'shipment']);
 
         return new OrderResource($order);
     }

@@ -15,6 +15,7 @@ class BulkPricingRuleResource extends JsonResource
         return [
             'id' => $this->id,
             'product_variant_id' => $this->product_variant_id,
+            'product_variant' => new ProductVariantResource($this->whenLoaded('productVariant')),
             'min_qty' => $this->min_qty,
             'price_per_unit' => $this->price_per_unit,
         ];

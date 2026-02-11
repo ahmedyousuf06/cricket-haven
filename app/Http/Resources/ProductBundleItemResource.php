@@ -15,7 +15,13 @@ class ProductBundleItemResource extends JsonResource
         return [
             'id' => $this->id,
             'bundle_id' => $this->bundle_id,
+            'bundle' => $this->whenLoaded('bundle', fn () => [
+                'id' => $this->bundle->id,
+                'name' => $this->bundle->name,
+                'slug' => $this->bundle->slug,
+            ]),
             'product_variant_id' => $this->product_variant_id,
+            'product_variant' => new ProductVariantResource($this->whenLoaded('productVariant')),
             'qty' => $this->qty,
         ];
     }

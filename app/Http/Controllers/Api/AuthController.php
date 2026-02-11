@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -32,7 +33,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user' => $this->withRole($user),
+            'user' => (new UserResource($user))->resolve(),
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
@@ -56,7 +57,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user' => $this->withRole($user),
+            'user' => (new UserResource($user))->resolve(),
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
@@ -74,15 +75,7 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return response()->json([
-            'user' => $this->withRole($request->user()),
+            'user' => (new UserResource($request->user()))->resolve(),
         ]);
-    }
-
-    private function withRole(User $user): array
-    {
-        $data = $user->toArray();
-        $data['role'] = $user->role ?? 'buyer';
-
-        return $data;
     }
 }

@@ -12,7 +12,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = Product::query()
-            ->with(['variants.attributes', 'images', 'ratingSummary'])
+            ->with(['brand', 'category', 'vendor', 'variants.attributes', 'variants.attributeValues', 'images', 'ratingSummary'])
             ->active();
 
         if ($search = $request->query('search')) {
@@ -67,7 +67,7 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        $product->load(['variants.attributes', 'images', 'ratingSummary']);
+        $product->load(['brand', 'category', 'vendor', 'variants.attributes', 'variants.attributeValues', 'images', 'ratingSummary']);
 
         return new ProductResource($product);
     }

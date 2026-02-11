@@ -17,8 +17,22 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'brand_id' => $this->brand_id,
+            'brand' => $this->whenLoaded('brand', fn () => [
+                'id' => $this->brand->id,
+                'name' => $this->brand->name,
+                'slug' => $this->brand->slug,
+            ]),
             'category_id' => $this->category_id,
+            'category' => $this->whenLoaded('category', fn () => [
+                'id' => $this->category->id,
+                'name' => $this->category->name,
+                'slug' => $this->category->slug,
+            ]),
             'vendor_id' => $this->vendor_id,
+            'vendor' => $this->whenLoaded('vendor', fn () => [
+                'id' => $this->vendor->id,
+                'name' => $this->vendor->name,
+            ]),
             'description' => $this->description,
             'short_description' => $this->short_description,
             'status' => $this->status,

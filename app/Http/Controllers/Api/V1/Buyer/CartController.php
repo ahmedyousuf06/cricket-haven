@@ -18,7 +18,7 @@ class CartController extends Controller
     public function show(Request $request)
     {
         $cart = $this->getOrCreateCart($request);
-        $cart->load(['items.productVariant']);
+        $cart->load(['user', 'items.cart', 'items.productVariant.product', 'items.bundle']);
 
         return new CartResource($cart);
     }
@@ -40,7 +40,7 @@ class CartController extends Controller
             ]
         );
 
-        $cart->load(['items.productVariant']);
+        $cart->load(['user', 'items.cart', 'items.productVariant.product', 'items.bundle']);
 
         return new CartResource($cart);
     }
@@ -53,7 +53,7 @@ class CartController extends Controller
             'qty' => $request->input('qty'),
         ]);
 
-        $item->load('productVariant');
+        $item->load(['cart', 'productVariant.product', 'bundle']);
 
         return response()->json([
             'item' => new CartItemResource($item),
